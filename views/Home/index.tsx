@@ -1,4 +1,4 @@
-import { repeat, sortBy } from "lodash";
+import { sortBy } from "lodash";
 import React from "react";
 import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,12 +27,20 @@ export default function Home() {
   });
 
   return (
-    <View style={{ width: "100%", backgroundColor: "#111", height: "100%" }}>
+    <View
+      style={{
+        width: "100%",
+        backgroundColor: "#111",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       {!soonestAlarm ? (
         <Text
           style={{
             fontFamily: "Roboto",
-            fontSize: 48,
+            fontSize: 18,
             color: "#eee",
           }}
         >

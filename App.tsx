@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { store } from "./store";
 import Alarms from "./views/Alarms";
 import Home from "./views/Home";
+import Settings from "./views/Settings";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -42,19 +43,39 @@ export default function App() {
               tabBarActiveBackgroundColor: "#FF8C00",
               tabBarActiveTintColor: "#eee",
               tabBarInactiveBackgroundColor: "#222",
-              tabBarInactiveTintColor: "#eee",
+              tabBarInactiveTintColor: "#bbb",
               tabBarStyle: {
                 borderTopWidth: 0,
               },
               tabBarLabelStyle: {
                 fontSize: 16,
               },
-              tabBarIcon: () => {
+              tabBarIcon: ({ focused }) => {
                 switch (route.name) {
                   case "Home":
-                    return <Ionicons name="home" size={24} color="#eee" />;
+                    return (
+                      <Ionicons
+                        name="home"
+                        size={22}
+                        color={focused ? "#eee" : "#bbb"}
+                      />
+                    );
                   case "Alarms":
-                    return <Ionicons name="alarm" size={24} color="#eee" />;
+                    return (
+                      <Ionicons
+                        name="alarm"
+                        size={22}
+                        color={focused ? "#eee" : "#bbb"}
+                      />
+                    );
+                  case "Settings":
+                    return (
+                      <Ionicons
+                        name="settings"
+                        size={22}
+                        color={focused ? "#eee" : "#aaa"}
+                      />
+                    );
                   default:
                     return null;
                 }
@@ -64,6 +85,7 @@ export default function App() {
         >
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Alarms" component={Alarms} />
+          <Tab.Screen name="Settings" component={Settings} />
         </Tab.Navigator>
       </NavigationContainer>
     </Provider>
