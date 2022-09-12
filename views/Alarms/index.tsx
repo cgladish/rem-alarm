@@ -3,10 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Dispatch } from "../../store";
-import { getAlarms } from "../../store/alarms/selectors";
+import {
+  AlarmInfoWithNextTrigger,
+  getAlarms,
+} from "../../store/alarms/selectors";
 import { AlarmInfo } from "../../store/alarms/state";
 import { hoursToDisplayHours, padTimeString } from "../util";
 import { useState } from "react";
+import { isToday } from "date-fns";
 
 const dayOfWeekToText = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayOfWeekShort = ["S", "M", "T", "W", "T", "F", "S"];
@@ -16,7 +20,7 @@ const AlarmItem = ({
   alarmInfo,
 }: {
   index: number;
-  alarmInfo: AlarmInfo;
+  alarmInfo: AlarmInfoWithNextTrigger;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettingTime, setIsSettingTime] = useState(false);
@@ -102,8 +106,9 @@ const AlarmItem = ({
               color: alarmInfo.enabled ? "#eee" : "#bbb",
             }}
           >
-            {!repeats && alarmInfo.enabled && "Tomorrow"}
-            {!repeats && !alarmInfo.enabled && "Not set"}
+            {!repeats &&
+              alarmInfo.nextTrigger &&
+              (isToday(alarmInfo.nextTrigger) ? "Today" : "Tomorrow")}
             {repeats &&
               alarmInfo.repeat
                 .map((enabled, index) => [enabled, index])

@@ -3,28 +3,12 @@ import React from "react";
 import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "../../store";
-import { getAlarms } from "../../store/alarms/selectors";
+import { getAlarms, getSoonestAlarm } from "../../store/alarms/selectors";
 import { hoursToDisplayHours, padTimeString } from "../util";
 
 export default function Home() {
-  const alarms = useSelector(getAlarms);
   const dispatch = useDispatch<Dispatch>();
-
-  const sortedAlarms = sortBy(
-    alarms,
-    (alarmInfo) =>
-      new Date(0, 0, 0, alarmInfo.time.hours, alarmInfo.time.minutes)
-  );
-  const soonestAlarm = sortedAlarms.find((alarmInfo) => {
-    if (!alarmInfo.enabled) {
-      return true;
-    }
-    if (!alarmInfo.repeat.some((repeat) => repeat)) {
-      return true;
-    }
-    const currentDayOfWeek = new Date().getDay();
-    return alarmInfo.repeat[currentDayOfWeek];
-  });
+  const soonestAlarm = useSelector(getSoonestAlarm);
 
   return (
     <View
@@ -44,7 +28,7 @@ export default function Home() {
             color: "#eee",
           }}
         >
-          You have no alarms set for today.
+          You have no alarms set for today or tomorrow.
         </Text>
       ) : (
         <>
