@@ -1,5 +1,6 @@
-import React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "../../store";
 import { getState as getSettings } from "../../store/settings/selectors";
@@ -7,6 +8,24 @@ import { getState as getSettings } from "../../store/settings/selectors";
 export default function Settings() {
   const settings = useSelector(getSettings);
   const dispatch = useDispatch<Dispatch>();
+
+  const [isTimeToFallAsleepDropdownOpen, setIsTimeToFallAsleepDropdownOpen] =
+    useState(false);
+  const [timeToFallAsleepItems] = useState(
+    [1, 5, 10, 15, 20, 25, 30].map((value) => ({
+      label: `${value.toString()} minutes`,
+      value: value,
+    }))
+  );
+
+  const [isRemCycleLengthDropdownOpen, setIsRemCycleLengthDropdownOpen] =
+    useState(false);
+  const [remCycleLengthItems] = useState(
+    [70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120].map((value) => ({
+      label: `${value.toString()} minutes`,
+      value: value,
+    }))
+  );
 
   return (
     <View
@@ -18,7 +37,7 @@ export default function Settings() {
         paddingHorizontal: 20,
       }}
     >
-      <TouchableOpacity style={{ width: "100%" }}>
+      <View style={{ width: "100%" }}>
         <Text
           style={{
             fontFamily: "Roboto",
@@ -28,42 +47,23 @@ export default function Settings() {
         >
           Time to Fall Asleep
         </Text>
-        <Text
-          style={{
-            fontFamily: "Roboto",
-            fontSize: 16,
-            color: "#bbb",
-          }}
-        >
-          {settings.timeToFallAsleepMinutes} minutes
-        </Text>
-        {/*
-        <TextInput
-          style={{
-            color: "#eee",
-            borderColor: "#eee",
-            borderWidth: 1,
-            borderRadius: 16,
-            backgroundColor: "#222",
-            width: "100%",
-            paddingHorizontal: 12,
-            height: 40,
-            fontSize: 16,
-            marginTop: 6,
-          }}
-          onChangeText={(text) =>
+        <DropDownPicker
+          open={isTimeToFallAsleepDropdownOpen}
+          setOpen={setIsTimeToFallAsleepDropdownOpen}
+          value={settings.timeToFallAsleepMinutes}
+          setValue={(value) =>
             dispatch({
-              type: "@@settings/UPDATE_REM_CYCLE_LENGTH",
-              payload: { data: Number(text) },
+              type: "@@settings/UPDATE_TIME_TO_FALL_ASLEEP",
+              payload: { data: value(settings.timeToFallAsleepMinutes) },
             })
           }
-          value={settings.remCycleLengthMinutes.toString()}
-          placeholder="useless placeholder"
-          keyboardType="numeric"
+          items={timeToFallAsleepItems}
+          theme="DARK"
+          zIndex={3000}
+          zIndexInverse={1000}
         />
-        */}
-      </TouchableOpacity>
-      <TouchableOpacity style={{ marginTop: 18, width: "100%" }}>
+      </View>
+      <View style={{ marginTop: 18, width: "100%" }}>
         <Text
           style={{
             fontFamily: "Roboto",
@@ -73,41 +73,22 @@ export default function Settings() {
         >
           REM Cycle Length
         </Text>
-        <Text
-          style={{
-            fontFamily: "Roboto",
-            fontSize: 16,
-            color: "#bbb",
-          }}
-        >
-          {settings.remCycleLengthMinutes} minutes
-        </Text>
-        {/*
-        <TextInput
-          style={{
-            color: "#eee",
-            borderColor: "#eee",
-            borderWidth: 1,
-            borderRadius: 16,
-            backgroundColor: "#222",
-            width: "100%",
-            paddingHorizontal: 12,
-            height: 40,
-            fontSize: 16,
-            marginTop: 6,
-          }}
-          onChangeText={(text) =>
+        <DropDownPicker
+          open={isRemCycleLengthDropdownOpen}
+          setOpen={setIsRemCycleLengthDropdownOpen}
+          value={settings.remCycleLengthMinutes}
+          setValue={(value) =>
             dispatch({
               type: "@@settings/UPDATE_REM_CYCLE_LENGTH",
-              payload: { data: Number(text) },
+              payload: { data: value(settings.remCycleLengthMinutes) },
             })
           }
-          value={settings.remCycleLengthMinutes.toString()}
-          placeholder="useless placeholder"
-          keyboardType="numeric"
+          items={remCycleLengthItems}
+          theme="DARK"
+          zIndex={2000}
+          zIndexInverse={1000}
         />
-        */}
-      </TouchableOpacity>
+      </View>
     </View>
   );
 }

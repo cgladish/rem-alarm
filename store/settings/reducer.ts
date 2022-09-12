@@ -16,7 +16,7 @@ const timeToFallAsleepMinutes = (
 };
 
 const remCycleLengthMinutes = (
-  state = initialState.timeToFallAsleepMinutes,
+  state = initialState.remCycleLengthMinutes,
   action: Action
 ): number => {
   switch (action.type) {
