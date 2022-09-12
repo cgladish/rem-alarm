@@ -10,7 +10,6 @@ import { hoursToDisplayHours, padTimeString } from "../util";
 export default function Home() {
   const dispatch = useDispatch<Dispatch>();
   const soonestAlarm = useSelector(getSoonestAlarm);
-  console.log(soonestAlarm);
 
   return (
     <View
