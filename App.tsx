@@ -30,12 +30,13 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="alarms"
-          screenOptions={() => ({
-            headerShown: false,
-          })}
+          initialRouteName="Alarms"
+          screenOptions={{
+            headerStyle: { backgroundColor: "#222" },
+            headerTitleStyle: { color: "#eee" },
+          }}
         >
-          <Stack.Screen name="alarms" component={Alarms} />
+          <Stack.Screen name="Alarms" component={Alarms} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
