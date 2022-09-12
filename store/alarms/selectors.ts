@@ -4,7 +4,7 @@ import { RootState } from "../rootState";
 import { AlarmInfo, State } from "./state";
 
 export type AlarmInfoWithNextTrigger = AlarmInfo & {
-  nextTrigger: Date | null;
+  nextTrigger: Date;
 };
 
 export const getState = (rootState: RootState): State => rootState.alarms;
@@ -12,29 +12,21 @@ export const getAlarms = createSelector(
   [getState],
   (state): AlarmInfoWithNextTrigger[] =>
     state.alarms.map((alarmInfo) => {
-      let nextTrigger: Date | null = null;
+      let nextTrigger: Date = new Date();
+      nextTrigger.setHours(alarmInfo.time.hours);
+      nextTrigger.setMinutes(alarmInfo.time.minutes);
+
       const now = new Date();
-      const tomorrow = addDays(now, 1);
       if (!alarmInfo.repeat.some((repeat) => repeat)) {
-        nextTrigger = new Date();
-        nextTrigger.setHours(alarmInfo.time.hours);
-        nextTrigger.setMinutes(alarmInfo.time.minutes);
         if (nextTrigger < now) {
           nextTrigger = addDays(nextTrigger, 1);
         }
       } else {
-        if (alarmInfo.repeat[now.getDay()]) {
-          nextTrigger = new Date();
-          nextTrigger.setHours(alarmInfo.time.hours);
-          nextTrigger.setMinutes(alarmInfo.time.minutes);
-        }
-        if (
-          (!nextTrigger || nextTrigger < now) &&
-          alarmInfo.repeat[tomorrow.getDay()]
-        ) {
-          nextTrigger = new Date(tomorrow.getTime());
-          nextTrigger.setHours(alarmInfo.time.hours);
-          nextTrigger.setMinutes(alarmInfo.time.minutes);
+        for (let i = 0; i < 7; ++i) {
+          if (alarmInfo.repeat[nextTrigger.getDay()] && nextTrigger > now) {
+            break;
+          }
+          nextTrigger = addDays(nextTrigger, 1);
         }
       }
       return {
@@ -53,8 +45,7 @@ export const getSoonestAlarm = createSelector(
       }
       if (
         alarm.nextTrigger &&
-        (!soonestAlarm?.nextTrigger ||
-          alarm.nextTrigger < soonestAlarm.nextTrigger)
+        (!soonestAlarm || alarm.nextTrigger < soonestAlarm.nextTrigger)
       ) {
         soonestAlarm = alarm;
       }

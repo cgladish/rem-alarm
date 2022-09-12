@@ -1,3 +1,4 @@
+import { isToday, isTomorrow } from "date-fns";
 import { sortBy } from "lodash";
 import React from "react";
 import { Text, View } from "react-native";
@@ -9,6 +10,7 @@ import { hoursToDisplayHours, padTimeString } from "../util";
 export default function Home() {
   const dispatch = useDispatch<Dispatch>();
   const soonestAlarm = useSelector(getSoonestAlarm);
+  console.log(soonestAlarm);
 
   return (
     <View
@@ -20,7 +22,11 @@ export default function Home() {
         alignItems: "center",
       }}
     >
-      {!soonestAlarm ? (
+      {!soonestAlarm ||
+      !(
+        isToday(soonestAlarm.nextTrigger) ||
+        isTomorrow(soonestAlarm.nextTrigger)
+      ) ? (
         <Text
           style={{
             fontFamily: "Roboto",
@@ -42,7 +48,8 @@ export default function Home() {
             Your next alarm is set for{" "}
             {padTimeString(hoursToDisplayHours(soonestAlarm.time.hours))}:
             {padTimeString(soonestAlarm.time.minutes)}
-            {soonestAlarm.time.hours >= 12 ? "PM" : "AM"}.
+            {soonestAlarm.time.hours >= 12 ? "PM" : "AM"}{" "}
+            {isToday(soonestAlarm.nextTrigger) ? "today" : "tomorrow"}.
           </Text>
         </>
       )}
