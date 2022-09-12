@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import cloneDeep from "lodash/cloneDeep";
 import { Action } from "./actions";
 import { AlarmInfo, initialState } from "./state";
 
@@ -9,15 +10,7 @@ const alarms = (state = initialState.alarms, action: Action): AlarmInfo[] => {
         ...state,
         {
           time: { hours: 0, minutes: 0 },
-          repeat: {
-            0: false,
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false,
-          },
+          repeat: [false, false, false, false, false, false, false],
           enabled: true,
           ...action.payload.data,
         },
@@ -28,12 +21,26 @@ const alarms = (state = initialState.alarms, action: Action): AlarmInfo[] => {
       newState.splice(action.payload.index, 1);
       return newState;
     }
-    case "@@alarms/UPDATE": {
+    case "@@alarms/UPDATE_TIME": {
       const newState = state.slice();
-      newState.splice(action.payload.index, 1, {
-        ...state[action.payload.index],
-        ...action.payload.data,
-      });
+      newState[action.payload.index] = {
+        ...newState[action.payload.index],
+        time: action.payload.time,
+      };
+      return newState;
+    }
+    case "@@alarms/UPDATE_ENABLED": {
+      const newState = state.slice();
+      newState[action.payload.index] = {
+        ...newState[action.payload.index],
+        enabled: action.payload.enabled,
+      };
+      return newState;
+    }
+    case "@@alarms/UPDATE_REPEAT": {
+      const newState = cloneDeep(state);
+      newState[action.payload.index].repeat[action.payload.dayOfWeek] =
+        action.payload.enabled;
       return newState;
     }
     case "@@alarms/MOVE": {

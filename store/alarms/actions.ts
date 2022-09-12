@@ -8,9 +8,17 @@ export type RemoveAlarmAction = {
   type: "@@alarms/REMOVE";
   payload: { index: number };
 };
-export type UpdateAlarmAction = {
-  type: "@@alarms/UPDATE";
-  payload: { index: number; data: Partial<AlarmInfo> };
+export type UpdateAlarmTimeAction = {
+  type: "@@alarms/UPDATE_TIME";
+  payload: { index: number; time: AlarmInfo["time"] };
+};
+export type UpdateAlarmEnabledAction = {
+  type: "@@alarms/UPDATE_ENABLED";
+  payload: { index: number; enabled: boolean };
+};
+export type UpdateAlarmRepeatAction = {
+  type: "@@alarms/UPDATE_REPEAT";
+  payload: { index: number; dayOfWeek: number; enabled: boolean };
 };
 export type MoveAlarmAction = {
   type: "@@alarms/MOVE";
@@ -20,5 +28,7 @@ export type MoveAlarmAction = {
 export type Action =
   | AddAlarmAction
   | RemoveAlarmAction
-  | UpdateAlarmAction
+  | UpdateAlarmTimeAction
+  | UpdateAlarmEnabledAction
+  | UpdateAlarmRepeatAction
   | MoveAlarmAction;

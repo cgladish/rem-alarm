@@ -21,6 +21,7 @@ const hoursToDisplayHours = (hours: number): number => {
 };
 
 const dayOfWeekToText = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayOfWeekShort = ["S", "M", "T", "W", "T", "F", "S"];
 
 const AlarmItem = ({
   index,
@@ -59,14 +60,12 @@ const AlarmItem = ({
             setIsSettingTime(false);
             if (event.type === "set") {
               dispatch({
-                type: "@@alarms/UPDATE",
+                type: "@@alarms/UPDATE_TIME",
                 payload: {
                   index,
-                  data: {
-                    time: {
-                      hours: date!.getHours(),
-                      minutes: date!.getMinutes(),
-                    },
+                  time: {
+                    hours: date!.getHours(),
+                    minutes: date!.getMinutes(),
                   },
                 },
               });
@@ -118,9 +117,10 @@ const AlarmItem = ({
             {!repeats && alarmInfo.enabled && "Tomorrow"}
             {!repeats && !alarmInfo.enabled && "Not set"}
             {repeats &&
-              Object.entries(alarmInfo.repeat)
-                .filter(([day, enabled]) => enabled)
-                .map(([day]) => dayOfWeekToText[Number(day)])
+              alarmInfo.repeat
+                .map((enabled, index) => [enabled, index])
+                .filter(([enabled, index]) => enabled)
+                .map(([enabled, index]) => dayOfWeekToText[index as number])
                 .join(", ")}
           </Text>
         </View>
@@ -128,14 +128,13 @@ const AlarmItem = ({
           <Switch
             onChange={() => {
               dispatch({
-                type: "@@alarms/UPDATE",
-                payload: {
-                  index,
-                  data: { ...alarmInfo, enabled: !alarmInfo.enabled },
-                },
+                type: "@@alarms/UPDATE_ENABLED",
+                payload: { index, enabled: !alarmInfo.enabled },
               });
             }}
             value={alarmInfo.enabled}
+            trackColor={{ true: "#FF8C00" }}
+            thumbColor="#eee"
           />
           <Ionicons
             name={isExpanded ? "md-chevron-up" : "md-chevron-down"}
@@ -144,7 +143,40 @@ const AlarmItem = ({
           />
         </View>
       </View>
-      {isExpanded && <View></View>}
+      {isExpanded && (
+        <View style={{ flexDirection: "row", flex: 1, marginTop: 10 }}>
+          {alarmInfo.repeat.map((enabled, dayOfWeek) => (
+            <TouchableOpacity
+              onPress={() =>
+                dispatch({
+                  type: "@@alarms/UPDATE_REPEAT",
+                  payload: { index, dayOfWeek, enabled: !enabled },
+                })
+              }
+            >
+              <View
+                style={{
+                  height: 30,
+                  width: 30,
+                  borderRadius: 15,
+                  borderWidth: 1,
+                  borderColor: enabled ? "#FF8C00" : "#ccc",
+                  backgroundColor: enabled ? "#FF8C00" : undefined,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 5,
+                }}
+              >
+                <Text
+                  style={{ color: enabled ? "#eee" : "#ccc", fontSize: 18 }}
+                >
+                  {dayOfWeekShort[dayOfWeek]}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

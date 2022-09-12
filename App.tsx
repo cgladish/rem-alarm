@@ -6,6 +6,7 @@ import { store } from "./store";
 import Alarms from "./views/Alarms";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <StatusBar animated={true} backgroundColor="#222" style="light" />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Alarms"

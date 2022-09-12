@@ -3,15 +3,7 @@ export type AlarmInfo = {
     hours: number;
     minutes: number;
   };
-  repeat: {
-    0: boolean;
-    1: boolean;
-    2: boolean;
-    3: boolean;
-    4: boolean;
-    5: boolean;
-    6: boolean;
-  };
+  repeat: [boolean, boolean, boolean, boolean, boolean, boolean, boolean];
   enabled: boolean;
 };
 
