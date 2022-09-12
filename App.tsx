@@ -1,14 +1,16 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Provider } from "react-redux";
 import React, { useEffect } from "react";
 import { store } from "./store";
 import Alarms from "./views/Alarms";
+import Home from "./views/Home";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,15 +33,38 @@ export default function App() {
     <Provider store={store}>
       <StatusBar animated={true} backgroundColor="#222" style="light" />
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Alarms"
-          screenOptions={{
-            headerStyle: { backgroundColor: "#222" },
-            headerTitleStyle: { color: "#eee" },
+        <Tab.Navigator
+          initialRouteName="Home"
+          screenOptions={({ route }) => {
+            return {
+              headerStyle: { backgroundColor: "#222" },
+              headerTitleStyle: { color: "#eee" },
+              tabBarActiveBackgroundColor: "#FF8C00",
+              tabBarActiveTintColor: "#eee",
+              tabBarInactiveBackgroundColor: "#222",
+              tabBarInactiveTintColor: "#eee",
+              tabBarStyle: {
+                borderTopWidth: 0,
+              },
+              tabBarLabelStyle: {
+                fontSize: 16,
+              },
+              tabBarIcon: () => {
+                switch (route.name) {
+                  case "Home":
+                    return <Ionicons name="home" size={24} color="#eee" />;
+                  case "Alarms":
+                    return <Ionicons name="alarm" size={24} color="#eee" />;
+                  default:
+                    return null;
+                }
+              },
+            };
           }}
         >
-          <Stack.Screen name="Alarms" component={Alarms} />
-        </Stack.Navigator>
+          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="Alarms" component={Alarms} />
+        </Tab.Navigator>
       </NavigationContainer>
     </Provider>
   );

@@ -5,20 +5,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Dispatch } from "../../store";
 import { getAlarms } from "../../store/alarms/selectors";
 import { AlarmInfo } from "../../store/alarms/state";
+import { hoursToDisplayHours, padTimeString } from "../util";
 import { useState } from "react";
-
-const padTimeString = (time: number): string =>
-  time > 9 ? `${time}` : `0${time}`;
-
-const hoursToDisplayHours = (hours: number): number => {
-  if (hours == 0 || hours == 12) {
-    return 12;
-  }
-  if (hours > 12) {
-    return hours - 12;
-  }
-  return hours;
-};
 
 const dayOfWeekToText = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayOfWeekShort = ["S", "M", "T", "W", "T", "F", "S"];
