@@ -135,6 +135,7 @@ const AlarmItem = ({
         <View style={{ flexDirection: "row", flex: 1, marginTop: 10 }}>
           {alarmInfo.repeat.map((enabled, dayOfWeek) => (
             <TouchableOpacity
+              key={dayOfWeek}
               onPress={() =>
                 dispatch({
                   type: "@@alarms/UPDATE_REPEAT",

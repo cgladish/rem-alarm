@@ -59,6 +59,12 @@ export default function Settings() {
           }
           items={timeToFallAsleepItems}
           theme="DARK"
+          style={{
+            backgroundColor: "#222",
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: "#222",
+          }}
           zIndex={3000}
           zIndexInverse={1000}
         />
@@ -85,8 +91,14 @@ export default function Settings() {
           }
           items={remCycleLengthItems}
           theme="DARK"
+          style={{
+            backgroundColor: "#222",
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: "#222",
+          }}
           zIndex={2000}
-          zIndexInverse={1000}
+          zIndexInverse={2000}
         />
       </View>
     </View>
