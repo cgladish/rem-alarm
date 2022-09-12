@@ -5,12 +5,12 @@ import { Provider } from "react-redux";
 import React, { useEffect } from "react";
 import { store } from "./store";
 import Alarms from "./views/Alarms";
-import Home from "./views/Home";
+import Sleep from "./views/Sleep";
 import Settings from "./views/Settings";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import notifee, { TimestampTrigger, TriggerType } from "@notifee/react-native";
+import AlarmSetter from "./components/AlarmSetter";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +35,9 @@ export default function App() {
     <Provider store={store}>
       <StatusBar animated={true} backgroundColor="#222" style="light" />
       <NavigationContainer>
+        <AlarmSetter />
         <Tab.Navigator
-          initialRouteName="Home"
+          initialRouteName="Sleep"
           screenOptions={({ route }) => {
             return {
               headerStyle: { backgroundColor: "#222" },
@@ -53,10 +54,10 @@ export default function App() {
               },
               tabBarIcon: ({ focused }) => {
                 switch (route.name) {
-                  case "Home":
+                  case "Sleep":
                     return (
                       <Ionicons
-                        name="home"
+                        name="moon-outline"
                         size={22}
                         color={focused ? "#eee" : "#bbb"}
                       />
@@ -84,7 +85,7 @@ export default function App() {
             };
           }}
         >
-          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="Sleep" component={Sleep} />
           <Tab.Screen name="Alarms" component={Alarms} />
           <Tab.Screen name="Settings" component={Settings} />
         </Tab.Navigator>

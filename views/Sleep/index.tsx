@@ -1,14 +1,11 @@
 import { isToday, isTomorrow } from "date-fns";
-import { sortBy } from "lodash";
 import React from "react";
 import { Text, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { Dispatch } from "../../store";
-import { getAlarms, getSoonestAlarm } from "../../store/alarms/selectors";
+import { useSelector } from "react-redux";
+import { getSoonestAlarm } from "../../store/alarms/selectors";
 import { hoursToDisplayHours, padTimeString } from "../util";
 
-export default function Home() {
-  const dispatch = useDispatch<Dispatch>();
+export default function Sleep() {
   const soonestAlarm = useSelector(getSoonestAlarm);
 
   return (

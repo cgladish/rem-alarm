@@ -15,6 +15,8 @@ export const getAlarms = createSelector(
       let nextTrigger: Date = new Date();
       nextTrigger.setHours(alarmInfo.time.hours);
       nextTrigger.setMinutes(alarmInfo.time.minutes);
+      nextTrigger.setSeconds(0);
+      nextTrigger.setMilliseconds(0);
 
       const now = new Date();
       if (!alarmInfo.repeat.some((repeat) => repeat)) {
