@@ -2,7 +2,7 @@ import { AlarmInfo } from "./state";
 
 export type AddAlarmAction = {
   type: "@@alarms/ADD";
-  payload: { data: AlarmInfo };
+  payload: { data: Partial<AlarmInfo> };
 };
 export type RemoveAlarmAction = {
   type: "@@alarms/REMOVE";
@@ -10,7 +10,7 @@ export type RemoveAlarmAction = {
 };
 export type UpdateAlarmAction = {
   type: "@@alarms/UPDATE";
-  payload: { index: number; data: AlarmInfo };
+  payload: { index: number; data: Partial<AlarmInfo> };
 };
 export type MoveAlarmAction = {
   type: "@@alarms/MOVE";

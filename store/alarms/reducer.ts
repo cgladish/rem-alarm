@@ -5,7 +5,23 @@ import { AlarmInfo, initialState } from "./state";
 const alarms = (state = initialState.alarms, action: Action): AlarmInfo[] => {
   switch (action.type) {
     case "@@alarms/ADD": {
-      return [...state, action.payload.data];
+      return [
+        ...state,
+        {
+          time: { hours: 0, minutes: 0 },
+          repeat: {
+            0: false,
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false,
+          },
+          enabled: true,
+          ...action.payload.data,
+        },
+      ];
     }
     case "@@alarms/REMOVE": {
       const newState = state.slice();
@@ -14,7 +30,10 @@ const alarms = (state = initialState.alarms, action: Action): AlarmInfo[] => {
     }
     case "@@alarms/UPDATE": {
       const newState = state.slice();
-      newState.splice(action.payload.index, 1, action.payload.data);
+      newState.splice(action.payload.index, 1, {
+        ...state[action.payload.index],
+        ...action.payload.data,
+      });
       return newState;
     }
     case "@@alarms/MOVE": {
