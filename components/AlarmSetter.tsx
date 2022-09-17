@@ -1,6 +1,10 @@
 import { useSelector } from "react-redux";
 import { useContext, useEffect, useState } from "react";
-import notifee, { AndroidImportance, TriggerType } from "@notifee/react-native";
+import notifee, {
+  AndroidCategory,
+  AndroidImportance,
+  TriggerType,
+} from "@notifee/react-native";
 import { getAlarms } from "../store/alarms/selectors";
 import { DeviceSettingsContext } from "./DeviceSettingsProvider";
 
@@ -49,6 +53,8 @@ export default function AlarmSetter() {
                     fullScreenAction: {
                       id: "default",
                     },
+                    importance: AndroidImportance.HIGH,
+                    category: AndroidCategory.ALARM,
                   },
                 },
                 {
