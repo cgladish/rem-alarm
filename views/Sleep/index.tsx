@@ -26,23 +26,16 @@ export default function Sleep() {
       }}
     >
       {!isAlarmPermissionsEnabled && (
-        <View>
-          <Text
-            style={{
-              fontFamily: "Roboto",
-              fontSize: 18,
-              color: "#eee",
-              marginBottom: 10,
-            }}
-          >
-            You need to enable scheduling alarms in your permissions settings.
-          </Text>
-          <Button
-            title="ENABLE SCHEDULING ALARMS"
-            color="#FF8C00"
-            onPress={() => notifee.openAlarmPermissionSettings()}
-          />
-        </View>
+        <Text
+          style={{
+            fontFamily: "Roboto",
+            fontSize: 18,
+            color: "#eee",
+            marginBottom: 10,
+          }}
+        >
+          Your alarms will not work as intended due to missing permissions.
+        </Text>
       )}
       {isAlarmPermissionsEnabled && !isAlarmSet && (
         <Text

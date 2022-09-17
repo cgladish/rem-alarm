@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import notifee, { AndroidNotificationSetting } from "@notifee/react-native";
 import NotificationSounds, { Sound } from "react-native-notification-sounds";
-import { AppState, Platform } from "react-native";
+import { Alert, AppState, Platform } from "react-native";
 
 export const DeviceSettingsContext = createContext<{
   isAppVisible: boolean;
@@ -24,33 +24,66 @@ export default function DeviceSettingsProvider({
   const [alarmSounds, setAlarmSounds] = useState<Sound[]>([]);
 
   useEffect(() => {
-    const updateAlarmEnabled = async () => {
-      const settings = await notifee.getNotificationSettings();
-      setIsAlarmPermissionsEnabled(
-        settings.android.alarm === AndroidNotificationSetting.ENABLED
-      );
-    };
-    updateAlarmEnabled();
-
     NotificationSounds.getNotifications(
       Platform.OS === "android" ? "alarm" : "ringtone"
     ).then((soundsList) => setAlarmSounds(soundsList));
 
-    const subscription = AppState.addEventListener(
-      "change",
-      async (nextAppState) => {
-        if (nextAppState === "active") {
-          if (!isAppVisible) {
-            updateAlarmEnabled();
-          }
-          setIsAppVisible(true);
-        } else {
-          setIsAppVisible(false);
-        }
-      }
+    const subscription = AppState.addEventListener("change", (nextAppState) =>
+      setIsAppVisible(nextAppState === "active")
     );
     return () => subscription.remove();
   }, []);
+
+  useEffect(() => {
+    if (isAppVisible) {
+      (async () => {
+        setIsAlarmPermissionsEnabled(false);
+
+        const settings = await notifee.getNotificationSettings();
+        if (settings.android.alarm !== AndroidNotificationSetting.ENABLED) {
+          return Alert.alert(
+            "Restrictions Detected",
+            "You need to enable scheduling alarms in your permissions settings.",
+            [
+              {
+                text: "OK, open settings",
+                onPress: () => notifee.openAlarmPermissionSettings(),
+              },
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+
+        const batteryOptimizationEnabled =
+          await notifee.isBatteryOptimizationEnabled();
+        if (batteryOptimizationEnabled) {
+          return Alert.alert(
+            "Restrictions Detected",
+            "To ensure alarms are triggered, please disable battery optimization for the app.",
+            [
+              {
+                text: "OK, open settings",
+                onPress: () => notifee.openBatteryOptimizationSettings(),
+              },
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+
+        setIsAlarmPermissionsEnabled(true);
+      })();
+    }
+  }, [isAppVisible]);
 
   return (
     <DeviceSettingsContext.Provider

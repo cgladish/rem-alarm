@@ -16,12 +16,15 @@ export default function AlarmSetter() {
   useEffect(() => {
     (async () => {
       try {
+        if (notificationChannel) {
+          await notifee.deleteChannel(notificationChannel);
+        }
         const channel = await notifee.createChannel({
           id: "alarm",
           name: "Firing alarms & timers",
           lights: false,
           vibration: true,
-          sound: alarmSounds[0].url,
+          sound: alarmSounds[0]?.url,
           importance: AndroidImportance.HIGH,
         });
         setNotificationChannel(channel);
@@ -29,7 +32,7 @@ export default function AlarmSetter() {
         console.error(err);
       }
     })();
-  }, []);
+  }, [alarmSounds]);
 
   useEffect(() => {
     (async () => {
