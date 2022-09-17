@@ -1,13 +1,16 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import notifee, { AndroidNotificationSetting } from "@notifee/react-native";
-import { AppState } from "react-native";
+import NotificationSounds, { Sound } from "react-native-notification-sounds";
+import { AppState, Platform } from "react-native";
 
 export const DeviceSettingsContext = createContext<{
   isAppVisible: boolean;
   isAlarmPermissionsEnabled: boolean;
+  alarmSounds: Sound[];
 }>({
   isAppVisible: false,
   isAlarmPermissionsEnabled: false,
+  alarmSounds: [],
 });
 
 export default function DeviceSettingsProvider({
@@ -18,6 +21,7 @@ export default function DeviceSettingsProvider({
   const [isAppVisible, setIsAppVisible] = useState(true);
   const [isAlarmPermissionsEnabled, setIsAlarmPermissionsEnabled] =
     useState(false);
+  const [alarmSounds, setAlarmSounds] = useState<Sound[]>([]);
 
   useEffect(() => {
     const updateAlarmEnabled = async () => {
@@ -26,8 +30,12 @@ export default function DeviceSettingsProvider({
         settings.android.alarm === AndroidNotificationSetting.ENABLED
       );
     };
-
     updateAlarmEnabled();
+
+    NotificationSounds.getNotifications(
+      Platform.OS === "android" ? "alarm" : "ringtone"
+    ).then((soundsList) => setAlarmSounds(soundsList));
+
     const subscription = AppState.addEventListener(
       "change",
       async (nextAppState) => {
@@ -46,7 +54,7 @@ export default function DeviceSettingsProvider({
 
   return (
     <DeviceSettingsContext.Provider
-      value={{ isAppVisible, isAlarmPermissionsEnabled }}
+      value={{ isAppVisible, isAlarmPermissionsEnabled, alarmSounds }}
     >
       {children}
     </DeviceSettingsContext.Provider>

@@ -6,7 +6,9 @@ import { DeviceSettingsContext } from "./DeviceSettingsProvider";
 
 export default function AlarmSetter() {
   const alarms = useSelector(getAlarms);
-  const { isAlarmPermissionsEnabled } = useContext(DeviceSettingsContext);
+  const { isAlarmPermissionsEnabled, alarmSounds } = useContext(
+    DeviceSettingsContext
+  );
   const [notificationChannel, setNotificationChannel] = useState<
     string | undefined
   >(undefined);
@@ -19,7 +21,7 @@ export default function AlarmSetter() {
           name: "Firing alarms & timers",
           lights: false,
           vibration: true,
-          sound: "default",
+          sound: alarmSounds[0].url,
           importance: AndroidImportance.HIGH,
         });
         setNotificationChannel(channel);
@@ -41,6 +43,9 @@ export default function AlarmSetter() {
                   title: "REM Alarm",
                   android: {
                     channelId: notificationChannel,
+                    fullScreenAction: {
+                      id: "default",
+                    },
                   },
                 },
                 {
