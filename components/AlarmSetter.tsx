@@ -1,10 +1,12 @@
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import notifee, { AndroidImportance, TriggerType } from "@notifee/react-native";
 import { getAlarms } from "../store/alarms/selectors";
+import { DeviceSettingsContext } from "./DeviceSettingsProvider";
 
 export default function AlarmSetter() {
   const alarms = useSelector(getAlarms);
+  const { isAlarmPermissionsEnabled } = useContext(DeviceSettingsContext);
   const [notificationChannel, setNotificationChannel] = useState<
     string | undefined
   >(undefined);
@@ -17,6 +19,7 @@ export default function AlarmSetter() {
           name: "Firing alarms & timers",
           lights: false,
           vibration: true,
+          sound: "default",
           importance: AndroidImportance.HIGH,
         });
         setNotificationChannel(channel);
@@ -32,18 +35,23 @@ export default function AlarmSetter() {
         await notifee.cancelAllNotifications();
         for (let alarm of alarms) {
           if (alarm.enabled) {
-            await notifee.createTriggerNotification(
-              {
-                title: "REM Alarm",
-                android: {
-                  channelId: notificationChannel,
+            if (isAlarmPermissionsEnabled) {
+              await notifee.createTriggerNotification(
+                {
+                  title: "REM Alarm",
+                  android: {
+                    channelId: notificationChannel,
+                  },
                 },
-              },
-              {
-                type: TriggerType.TIMESTAMP,
-                timestamp: alarm.nextTrigger.getTime(),
-              }
-            );
+                {
+                  type: TriggerType.TIMESTAMP,
+                  timestamp: alarm.nextTrigger.getTime(),
+                  alarmManager: {
+                    allowWhileIdle: true,
+                  },
+                }
+              );
+            }
           }
         }
       } catch (err) {
